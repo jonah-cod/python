@@ -5,6 +5,7 @@ import glob
 def listsSetComp():
     words = "well I couldn't think of any other words".split()
     # let's create a whole new list with lengths of each of above words
+    # lists are iterables denoted by square brackets
     lengths_in_list = [len(word) for word in words]
     # we end up with a whole new list
     # [4, 1, 8, 5, 2, 3, 5, 5]
@@ -12,6 +13,7 @@ def listsSetComp():
     print(lengths_in_list)
     
     # same thing happens with sets
+    # sets are iterables denoted by curly braces (unique items and don't contain key-values like dics)
     lengths_in_set  = {len(word) for word in words}
     # we end up with a whole new set
     # {1, 2, 3, 4, 5, 8}
