@@ -49,6 +49,7 @@ class Flight:
         
         self._seating[row][seat_letter] = passenger
         
+    # move a passenger
     def relocate_passenger(self, from_seat, to_seat):
         """Relocates a passenger from one seat to another
         
@@ -71,6 +72,7 @@ class Flight:
         self._seating[to_row][to_seat_letter] = self._seating[from_row][from_seat_letter]
         self._seating[from_row][from_seat_letter] = None
     
+    # validate a seat 
     def _parse_seat(self, seat):
         rows, seat_letters = self._aircraft.seating_plan()
         seat_letter = seat[-1]
@@ -89,8 +91,26 @@ class Flight:
         
         return row, seat_letter
     
+    def make_boarding_cards(self, card_printer):
+        """ Prints boarding cards for all passengers
+            Args:
+                card_printer: a function that prints out cards
+        """
+        for passenger, seat in sorted(self._occupied_seats()):
+            card_printer(passenger, seat, self._number, self.aircraft_model())
+            
+    # gets all occupied seats and the passenger
+    def _occupied_seats(self):
+        rows, seats = self._aircraft.seating_plan()
+        for row in rows:
+            for seat in seats:
+                passenger = self._seating[row][seat]
+                if  passenger is not None:
+                    yield(passenger, f"{row}{seat}")
     
 class Aircraft:
+    """ Creates an aircraft object
+    """
     def __init__(self, registration, model, num_rows, num_seats_per_row):
         self._registration = registration
         self._model =model
@@ -109,4 +129,32 @@ class Aircraft:
     
     
     
-         
+def console_card_printer(passenger, seat, flight_number, aircraft):
+    output = f"| Name: {passenger}"        \
+             f"  Flight: {flight_number}"  \
+             f"  Seat: {seat}"             \
+             f"  Aircraft: {aircraft}"     \
+              " |"
+              
+    banner = "+" + "-" * (len(output)-2) + "+"
+    border = "|" + " " * (len(output)-2) + "|"
+    card = [banner, border, output, border, banner]
+    
+    lines = "\n".join(card)
+    print(lines)
+    print()
+    
+    
+def make_flight():
+    f = Flight("BA7580", Aircraft("KE-UPT", "Boeng 787", num_rows=20, num_seats_per_row=6))
+    f.booking_seat("1A", "John Doe")
+    f.booking_seat("1B", "Jane Smith")
+    f.booking_seat("2A", "Michael Johnson")
+    f.booking_seat("2B", "Emily Davis")
+    f.booking_seat("3A", "Chris Brown")
+    f.booking_seat("3B", "Laura Wilson")
+    f.booking_seat("4A", "David Moore")
+    f.booking_seat("4B", "Sophia White")
+    f.booking_seat("5A", "James Taylor")
+    f.booking_seat("5B", "Linda Martinez")
+    return f
